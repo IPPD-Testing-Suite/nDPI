@@ -339,9 +339,29 @@ files_corpus_fuzz_filecfg_category := $(wildcard $(srcdir)/corpus/fuzz_filecfg_c
 fuzz_filecfg_category_seed_corpus.zip: $(files_corpus_fuzz_filecfg_category)
 	@zip -q -j $@ $(files_corpus_fuzz_filecfg_category)
 
+files_corpus_fuzz_community_id := $(wildcard $(srcdir)/corpus/fuzz_community_id_seed/*)
+fuzz_community_id_seed_corpus.zip: $(files_corpus_fuzz_community_id)
+	@zip -q -j $@ $(files_corpus_fuzz_community_id)
+
+files_corpus_fuzz_alg_bins := $(wildcard $(srcdir)/corpus/fuzz_alg_bins_seed/*)
+fuzz_alg_bins_seed_corpus.zip: $(files_corpus_fuzz_alg_bins)
+	@zip -q -j $@ $(files_corpus_fuzz_alg_bins)
+
+files_corpus_fuzz_alg_memmem := $(wildcard $(srcdir)/corpus/fuzz_alg_memmem_seed/*)
+fuzz_alg_memmem_seed_corpus.zip: $(files_corpus_fuzz_alg_memmem)
+	@zip -q -j $@ $(files_corpus_fuzz_alg_memmem)
+
+files_corpus_fuzz_alg_hw_rsi_outliers_da := $(wildcard $(srcdir)/corpus/fuzz_alg_hw_rsi_outliers_da_seed/*)
+fuzz_alg_hw_rsi_outliers_da_seed_corpus.zip: $(files_corpus_fuzz_alg_hw_rsi_outliers_da)
+	@zip -q -j $@ $(files_corpus_fuzz_alg_hw_rsi_outliers_da)
+
+files_corpus_fuzz_alg_crc32_md5 := $(wildcard $(srcdir)/corpus/fuzz_alg_crc32_md5_seed/*)
+fuzz_alg_crc32_md5_seed_corpus.zip: $(files_corpus_fuzz_alg_crc32_md5)
+	@zip -q -j $@ $(files_corpus_fuzz_alg_crc32_md5)
+
 # Phony target to build all corpora (incremental build via dependencies)
 .PHONY: corpus
-corpus: fuzz_ndpi_reader_seed_corpus.zip fuzz_ndpi_reader_nalloc_seed_corpus.zip fuzz_ndpi_reader_alloc_fail_seed_corpus.zip fuzz_ndpi_reader_payload_analyzer_seed_corpus.zip fuzz_quic_get_crypto_data_seed_corpus.zip fuzz_libinjection_seed_corpus.zip fuzz_tls_certificate_seed_corpus.zip fuzz_filecfg_protocols_seed_corpus.zip fuzz_is_stun_udp_seed_corpus.zip fuzz_is_stun_tcp_seed_corpus.zip fuzz_ndpi_reader_pl7m_simplest_seed_corpus.zip fuzz_ndpi_reader_pl7m_seed_corpus.zip fuzz_ndpi_reader_pl7m_64k_seed_corpus.zip fuzz_ndpi_reader_pl7m_simplest_internal_seed_corpus.zip fuzz_ndpi_reader_pl7m_internal_seed_corpus.zip fuzz_ndpi_reader_pl7m_only_subclassification_seed_corpus.zip fuzz_ndpi_reader_pl7m_randomize_ports_seed_corpus.zip fuzz_filecfg_malicious_ja4_seed_corpus.zip fuzz_filecfg_malicious_sha1_seed_corpus.zip fuzz_filecfg_categories_seed_corpus.zip fuzz_filecfg_category_seed_corpus.zip fuzz_filecfg_config_seed_corpus.zip fuzz_filecfg_risk_domains_seed_corpus.zip
+corpus: fuzz_ndpi_reader_seed_corpus.zip fuzz_ndpi_reader_nalloc_seed_corpus.zip fuzz_ndpi_reader_alloc_fail_seed_corpus.zip fuzz_ndpi_reader_payload_analyzer_seed_corpus.zip fuzz_quic_get_crypto_data_seed_corpus.zip fuzz_libinjection_seed_corpus.zip fuzz_tls_certificate_seed_corpus.zip fuzz_filecfg_protocols_seed_corpus.zip fuzz_is_stun_udp_seed_corpus.zip fuzz_is_stun_tcp_seed_corpus.zip fuzz_ndpi_reader_pl7m_simplest_seed_corpus.zip fuzz_ndpi_reader_pl7m_seed_corpus.zip fuzz_ndpi_reader_pl7m_64k_seed_corpus.zip fuzz_ndpi_reader_pl7m_simplest_internal_seed_corpus.zip fuzz_ndpi_reader_pl7m_internal_seed_corpus.zip fuzz_ndpi_reader_pl7m_only_subclassification_seed_corpus.zip fuzz_ndpi_reader_pl7m_randomize_ports_seed_corpus.zip fuzz_filecfg_malicious_ja4_seed_corpus.zip fuzz_filecfg_malicious_sha1_seed_corpus.zip fuzz_filecfg_categories_seed_corpus.zip fuzz_filecfg_category_seed_corpus.zip fuzz_filecfg_config_seed_corpus.zip fuzz_filecfg_risk_domains_seed_corpus.zip fuzz_community_id_seed_corpus.zip fuzz_alg_bins_seed_corpus.zip fuzz_alg_memmem_seed_corpus.zip fuzz_alg_hw_rsi_outliers_da_seed_corpus.zip fuzz_alg_crc32_md5_seed_corpus.zip
 	@echo "All corpus files are up to date"
 	@if [ -d "$(srcdir)/corpus" ] && ls $(srcdir)/corpus/fuzz_*seed_corpus.zip >/dev/null 2>&1; then \
 		echo "Copying pre-built corpus files from source directory..."; \
@@ -414,7 +434,12 @@ distdir:
 		-o -path '$(srcdir)/corpus/fuzz_is_stun_udp/*' \
 		-o -path '$(srcdir)/corpus/fuzz_is_stun_tcp/*' \
 		-o -path '$(srcdir)/corpus/fuzz_libinjection/*' \
-		-o -path '$(srcdir)/corpus/fuzz_tls_certificate/*' | xargs -I'{}' cp -r '{}' '$(distdir)/{}'
+		-o -path '$(srcdir)/corpus/fuzz_tls_certificate/*' \
+		-o -path '$(srcdir)/corpus/fuzz_community_id_seed/*' \
+		-o -path '$(srcdir)/corpus/fuzz_alg_bins_seed/*' \
+		-o -path '$(srcdir)/corpus/fuzz_alg_memmem_seed/*' \
+		-o -path '$(srcdir)/corpus/fuzz_alg_hw_rsi_outliers_da_seed/*' \
+		-o -path '$(srcdir)/corpus/fuzz_alg_crc32_md5_seed/*' | xargs -I'{}' cp -r '{}' '$(distdir)/{}'
 	find . -type l -name '*.c' | xargs -I'{}' cp -r '{}' '$(distdir)/{}'
 
 all: corpus dictionaries

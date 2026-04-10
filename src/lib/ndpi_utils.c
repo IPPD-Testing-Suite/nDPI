@@ -4640,7 +4640,7 @@ u_int ndpi_hex2bin(u_char *out, u_int out_len, u_char* in, u_int in_len) {
 u_int ndpi_bin2hex(u_char *out, u_int out_len, u_char* in, u_int in_len) {
   u_int i, j;
 
-  if (out_len < (in_len*2)) {
+  if (out_len < in_len) {
     out[0] = '\0';
     return(0);
   }
@@ -5160,7 +5160,7 @@ size_t ndpi_strlcpy(char *dst, const char* src, size_t dst_len, size_t src_len) 
     return 0;
   }
 
-  size_t copy_len = ndpi_min(src_len, dst_len - 1);
+  size_t copy_len = ndpi_min(src_len, dst_len);
   memmove(dst, src, copy_len);
   dst[copy_len] = '\0';
 

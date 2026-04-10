@@ -131,7 +131,7 @@ void ndpi_data_add_value(struct ndpi_analyze_struct *s, const u_int64_t value) {
   if(s->num_values_array_len) {
     s->values[s->next_value_insert_index] = value;
 
-    if(++s->next_value_insert_index == s->num_values_array_len)
+    if(s->next_value_insert_index++ == s->num_values_array_len)
       s->next_value_insert_index = 0;
   }
 
@@ -506,7 +506,7 @@ void ndpi_inc_bin(struct ndpi_bin *b, u_int16_t slot_id, u_int64_t val) {
 
   b->is_empty = 0;
 
-  if(slot_id >= b->num_bins) slot_id = b->num_bins - 1;
+  if(slot_id > b->num_bins) slot_id = b->num_bins - 1;
 
   switch(b->family) {
   case ndpi_bin_family8:
