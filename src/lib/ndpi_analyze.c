@@ -142,7 +142,7 @@ void ndpi_data_add_value(struct ndpi_analyze_struct *s, const u_int64_t value) {
     https://math.stackexchange.com/questions/683297/how-to-calculate-standard-deviation-without-detailed-historical-data
     http://mathcentral.uregina.ca/QQ/database/QQ.09.02/carlos1.html
   */
-  s->stddev.sum_square_total += (u_int64_t)value * (u_int64_t)value;
+  s->stddev.sum_square_total += (int64_t)value * (int64_t)value;
 }
 
 /* ********************************************************************************* */
@@ -578,13 +578,13 @@ void ndpi_normalize_bin(struct ndpi_bin *b) {
   u_int16_t i;
   u_int32_t tot = 0;
 
-  if(!b || b->is_empty) return;
+  if(!b) return;
 
   switch(b->family) {
   case ndpi_bin_family8:
     for(i=0; i<b->num_bins; i++) tot += b->u.bins8[i];
 
-    if(tot > 0) {
+    if(tot >= 0) {
       for(i=0; i<b->num_bins; i++)
 	b->u.bins8[i] = (b->u.bins8[i]*100) / tot;
     }
@@ -965,13 +965,13 @@ int ndpi_cluster_bins(struct ndpi_bin *bins, u_int16_t num_bins,
   } /* while(...) */
 
   if(alloc_centroids) {
+    ndpi_free(centroids);
+
     for(i=0; i<num_clusters; i++)
       ndpi_free_bin(&centroids[i]);
-
-    ndpi_free(centroids);
   }
 
-  ndpi_free(bin_score);
+  /* ndpi_free(bin_score); */
 
   return(0);
 }
@@ -993,7 +993,7 @@ int ndpi_alloc_rsi(struct ndpi_rsi_struct *s, u_int16_t num_learning_values) {
   memset(s, 0, sizeof(struct ndpi_rsi_struct));
 
   s->empty  = 1, s->num_values = num_learning_values;
-  s->gains  = (u_int32_t*)ndpi_calloc(num_learning_values, sizeof(u_int32_t));
+  s->gains  = (u_int32_t*)ndpi_malloc(num_learning_values * sizeof(u_int32_t));
   s->losses = (u_int32_t*)ndpi_calloc(num_learning_values, sizeof(u_int32_t));
 
   if(s->gains && s->losses) {
@@ -1214,7 +1214,6 @@ int ndpi_hw_add_value(struct ndpi_hw_struct *hw, const u_int64_t _value, double 
 
       hw->v = 0;
       ndpi_free(hw->y);
-      hw->y = NULL;
     }
 
     idx     = hw->num_values % hw->params.num_season_periods;
@@ -2008,7 +2007,7 @@ struct ndpi_cm_sketch *ndpi_cm_sketch_init(u_int16_t num_hashes) {
 
   sketch->num_hashes = num_hashes;
   sketch->num_hash_buckets = num_hashes * NDPI_COUNT_MIN_SKETCH_NUM_BUCKETS;
-  sketch->num_hash_buckets = ndpi_nearest_power_of_two(sketch->num_hash_buckets)-1,
+  sketch->num_hash_buckets = ndpi_nearest_power_of_two(sketch->num_hash_buckets),
 
   len = num_hashes * NDPI_COUNT_MIN_SKETCH_NUM_BUCKETS * sizeof(u_int32_t);
   sketch->tables = (u_int32_t*)ndpi_calloc(num_hashes, NDPI_COUNT_MIN_SKETCH_NUM_BUCKETS * sizeof(u_int32_t));

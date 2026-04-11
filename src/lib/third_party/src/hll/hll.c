@@ -76,13 +76,13 @@ int hll_init(struct ndpi_hll *hll, u_int8_t bits) {
 
   memset(hll, '\0', sizeof(*hll));
 
-  if(bits < 4 || bits > 20) {
+  if(bits < 4 || bits > 31) {
     errno = ERANGE;
     return -1;
   }
 
   hll->bits = bits; /* Number of bits of buckets number */
-  hll->size = (size_t)1 << bits; /* Number of buckets 2^bits */
+  hll->size = 1 << bits; /* Number of buckets 2^bits */
   hll->registers = ndpi_calloc(hll->size, 1); /* Create the bucket register counters */
 
   /* printf("%lu bytes\n", hll->size); */
