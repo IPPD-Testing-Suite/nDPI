@@ -57,8 +57,21 @@ cd ndpi
 # * ADDITIONAL_* stuff: to be able run tests/unit/unit (via chronos/check_tests.sh) even with the previous workaround
 ./autogen.sh && AR=llvm-ar RANLIB=llvm-ranlib LDFLAGS="-L/usr/local/lib -lpcap" ADDITIONAL_INCS="-I/usr/local/include/json-c/" ADDITIONAL_LIBS="-L/usr/local/lib -ljson-c" ./configure --disable-shared --enable-fuzztargets --with-only-libndpi
 make -j$(nproc)
-# Copy fuzzers
-ls fuzz/fuzz* | grep -v "\." | while read -r i; do cp "$i" "$OUT"/; done
+# Copy only the harnesses involved with the introduced bugs
+RELEVANT_HARNESSES=(
+  fuzz_community_id
+  fuzz_alg_bins
+  fuzz_alg_memmem
+  fuzz_alg_hw_rsi_outliers_da
+  fuzz_alg_crc32_md5
+  fuzz_alg_strnstr
+  fuzz_alg_hll
+  fuzz_ds_cmsketch
+  fuzz_serialization
+)
+for h in "${RELEVANT_HARNESSES[@]}"; do
+  [ -f "fuzz/$h" ] && cp "fuzz/$h" "$OUT"/
+done
 # Copy dictionaries
 cp fuzz/*.dict "$OUT"/
 # Copy seed corpus
